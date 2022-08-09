@@ -1,1 +1,2 @@
-web: sh -c "gunicorn app.wsgi --log-file - && python manage.py bot"
+web: gunicorn app.wsgi --log-file -
+work: python manage.py bot
