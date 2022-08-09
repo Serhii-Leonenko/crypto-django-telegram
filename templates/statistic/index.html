@@ -1,0 +1,41 @@
+{%  extends "base.html" %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+    </div>
+    <br>
+    <br>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Username</th>
+          <th scope="col">Clicks</th>
+          <th scope="col">Conversions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>
+              {% if clicks is None %}
+                  0
+              {% else %}
+                  {{ clicks }}
+              {% endif %}
+          </td>
+          <td>
+              {% if conversions is None %}
+                  0
+              {% else %}
+                  {{ conversions }}
+              {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+{% endblock %}
