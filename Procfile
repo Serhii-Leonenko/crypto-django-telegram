@@ -1,2 +1,1 @@
-web: gunicorn app.wsgi --log-file -
-release: python manage.py bot
+web: sh -c "gunicorn app.wsgi --log-file - && python manage.py bot"
