@@ -1,3 +1,5 @@
+import os
+
 import telebot
 from django.contrib.auth import get_user_model
 from django.core.management import BaseCommand
@@ -8,7 +10,7 @@ class Command(BaseCommand):
     help = "telegram-bot"
 
     def handle(self, *args, **options):
-        bot = telebot.TeleBot("5502151656:AAE7G6LZVaHL9bKhmf1G-6BBKabwu8IsSmw")
+        bot = telebot.TeleBot(os.environ["BOT_API"])
 
         valid_users = {
             "bogdan": 1799244985,
