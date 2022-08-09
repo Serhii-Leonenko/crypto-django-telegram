@@ -15,6 +15,7 @@ class Command(BaseCommand):
         valid_users = {
             "bogdan": 1799244985,
             "lovelas": 1836086969,
+            "serg_leonenko": 493498763,
         }
 
         @bot.message_handler(commands=["start"])
