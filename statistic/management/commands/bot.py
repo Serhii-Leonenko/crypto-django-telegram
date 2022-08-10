@@ -9,13 +9,11 @@ from telebot import types
 
 class Command(BaseCommand):
     help = "telegram-bot"
-    print(os.environ["BOT_API"])
 
     def handle(self, *args, **options):
         bot = telebot.TeleBot(os.environ["BOT_API"])
 
         valid_users = ast.literal_eval(os.environ["VALID_USERS"])
-        print(valid_users, type(valid_users))
 
         @bot.message_handler(commands=["start"])
         def start(message):

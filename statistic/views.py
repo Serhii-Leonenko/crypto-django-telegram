@@ -34,7 +34,9 @@ def index(request):
         },
         "metrics": ["clicks", "conversions"],
         "filters": [
-            {"name": "sub_id_6", "operator": "CONTAINS", "expression": "bogdan"}
+            {"name": "sub_id_6",
+             "operator": "CONTAINS",
+             "expression": request.user.username}
         ],
     }
 
