@@ -66,7 +66,7 @@ class Command(BaseCommand):
                 inline_markup.add(
                     types.InlineKeyboardButton(
                         "Go to the website...",
-                        url="http://127.0.0.1:8000/accounts/login/",
+                        url="https://tt-django-telegram.herokuapp.com/",
                     )
                 )
                 bot.send_message(
