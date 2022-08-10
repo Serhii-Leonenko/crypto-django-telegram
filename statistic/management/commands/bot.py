@@ -10,7 +10,7 @@ class Command(BaseCommand):
     help = "telegram-bot"
 
     def handle(self, *args, **options):
-        bot = telebot.TeleBot("5579891397:AAHQUsud_kW4foPmtSQowrUFP70aLvl6GrY")
+        bot = telebot.TeleBot(os.environ["BOT_API"])
 
         valid_users = {
             "bogdan": 1799244985,
