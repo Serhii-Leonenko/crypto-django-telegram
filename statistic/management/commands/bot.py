@@ -1,10 +1,9 @@
-import ast
 import os
 
 import telebot
+from telebot import types
 from django.contrib.auth import get_user_model
 from django.core.management import BaseCommand
-from telebot import types
 
 
 class Command(BaseCommand):
@@ -12,8 +11,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         bot = telebot.TeleBot(os.environ["BOT_API"])
-
-        valid_users = ast.literal_eval(os.environ["VALID_USERS"])
 
         @bot.message_handler(commands=["start"])
         def start(message):
@@ -38,24 +35,23 @@ class Command(BaseCommand):
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
                 item1 = types.KeyboardButton("Get credentials")
                 markup.add(item1)
-                if user_id in valid_users.values():
-                    user, created = get_user_model().objects.get_or_create(
-                        username=username
+                user, created = get_user_model().objects.get_or_create(
+                    username=username
+                )
+                if created:
+                    user.set_password(str(user_id))
+                    user.save()
+                    bot.send_message(
+                        message.chat.id,
+                        "Registration successfully!",
+                        reply_markup=markup,
                     )
-                    if created:
-                        user.set_password(str(user_id))
-                        user.save()
-                        bot.send_message(
-                            message.chat.id,
-                            "Registration successfully!",
-                            reply_markup=markup,
-                        )
-                    elif user:
-                        bot.send_message(
-                            message.chat.id,
-                            "You've already registered!",
-                            reply_markup=markup,
-                        )
+                elif user:
+                    bot.send_message(
+                        message.chat.id,
+                        "You've already registered!",
+                        reply_markup=markup,
+                    )
                 else:
                     bot.send_message(
                         message.chat.id,

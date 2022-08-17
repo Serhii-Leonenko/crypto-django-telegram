@@ -1,41 +1,37 @@
 {%  extends "base.html" %}
 {% load crispy_forms_filters %}
 {% block content %}
-    <div>
-        <form action="" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Submit" class="btn btn-primary">
-        </form>
-    </div>
-    <br>
+    <h1>Crypto Market</h1>
     <br>
     <table class="table">
       <thead>
-        <tr>
-          <th scope="col">Username</th>
-          <th scope="col">Clicks</th>
-          <th scope="col">Conversions</th>
-        </tr>
+          <tr>
+              <th style="width: 10%" scope="col">Rank</th>
+              <th style="width: 10%" scope="col">Icon</th>
+              <th style="width: 10%" scope="col">Symbol</th>
+              <th scope="col">Name</th>
+              <th scope="col">Price</th>
+              <th scope="col">Market cap</th>
+              <th>Favourites</th>
+          </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>{{ user.username }}</td>
-          <td>
-              {% if clicks is None %}
-                  0
-              {% else %}
-                  {{ clicks }}
-              {% endif %}
-          </td>
-          <td>
-              {% if conversions is None %}
-                  0
-              {% else %}
-                  {{ conversions }}
-              {% endif %}
-          </td>
-        </tr>
+        {% for coin in coins %}
+             <tr>
+                <td>{{ coin.rank }}</td>
+                <td><img width="20" height="20" alt="" src={{ coin.icon }} ></td>
+                <td>{{ coin.symbol }}</td>
+                <td>{{ coin.name }}</td>
+                <td>{{ coin.price }} $</td>
+                <td>{{ coin.market_cap }} $</td>
+                <td>{% if user in coin.users.all %}
+                        <a  class="btn btn-warning" href="{% url 'statistic:favourites_change' pk=coin.id %}">Remove from favourites</a>
+                    {% else %}
+                        <a  class="btn btn-success" href="{% url 'statistic:favourites_change' pk=coin.id %}">Add to favourites</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
       </tbody>
     </table>
 {% endblock %}

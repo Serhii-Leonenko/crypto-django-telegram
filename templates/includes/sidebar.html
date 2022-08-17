@@ -1,12 +1,16 @@
 <div class="sidebar-nav list-group">
   {% if user.is_authenticated %}
-    <p class="text-center">{{ user.username }}</p>
-    <a class="list-group-item list-group-item-action list-group-item-secondary text-center"
-       href="{% url 'logout'%}">↪</a>
+      <p class="text-center">{{ user.username }}</p>
+      <a class="list-group-item list-group-item-action text-center"
+         href="{% url 'statistic:index' %}">All market</a>
+      <a class="list-group-item list-group-item-action text-center"
+         href="{% url 'statistic:favourite_list' %}">Favourites ({{ user.coins.count }})</a>
+      <a class="list-group-item list-group-item-action list-group-item-primary text-center"
+         href="{% url 'logout'%}">↪</a>
   {% else %}
-    <a class="list-group-item list-group-item-action list-group-item-primary"
-       href="https://t.me/MyDjangoProjectBot">
-            Register with Telegram 🚀
-    </a>
+      <a class="list-group-item list-group-item-action list-group-item-primary"
+         href="https://t.me/MyDjangoProjectBot">
+            Registration with Telegram 🚀
+      </a>
   {% endif %}
 </div>
