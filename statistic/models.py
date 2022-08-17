@@ -17,3 +17,6 @@ class Coin(models.Model):
     market_cap = models.CharField(max_length=255)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="coins")
     icon = models.URLField()
+
+    class Meta:
+        ordering = ["rank"]

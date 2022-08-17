@@ -62,7 +62,7 @@ class Command(BaseCommand):
                 inline_markup.add(
                     types.InlineKeyboardButton(
                         "Go to the website...",
-                        url="https://tt-django-telegram.herokuapp.com/",
+                        url="https://crypto-django-telegram.herokuapp.com/",
                     )
                 )
                 bot.send_message(

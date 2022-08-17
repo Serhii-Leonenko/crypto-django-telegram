@@ -22,12 +22,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
+SECRET_KEY = os.environ.get(
+    "DJANGO_SECRET_KEY", "django-insecure-hf=s+vfj!d*a!1e1li@!uw416=cuu$yaxf(m_9xnz#3xo!z!5h"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG", "") != "False"
 
-ALLOWED_HOSTS = ["127.0.0.1", "tt-django-telegram.herokuapp.com"]
+ALLOWED_HOSTS = ["127.0.0.1", "crypto-django-telegram.herokuapp.com"]
 
 
 # Application definition
