@@ -8,12 +8,16 @@ import requests
 from statistic.models import Coin
 
 
-@login_required
-def index(request):
+def request_to_api():
     url = urljoin(os.getenv("PARSE_URL"), "coins")
     headers = {"x-access-token": os.getenv("API_KEY")}
     response = requests.get(url, headers=headers)
-    coins = response.json()["data"]["coins"]
+    return response.json()["data"]["coins"]
+
+
+@login_required
+def index(request):
+    coins = request_to_api()
     favourite_coins_uuid = [
         coin.uuid
         for coin in Coin.objects.filter(users__in=[request.user])
@@ -30,23 +34,25 @@ def index(request):
 @login_required
 def favourites_list(request):
     favourites = Coin.objects.filter(users__in=[request.user])
-    favourite_coins_uuid = []
+    favourite_coins_uuid = [
+        coin["uuid"]
+        for coin in favourites.values("uuid")
+    ]
+    data = request_to_api()
     coins = []
+
     for favourite_coin in favourites:
-        favourite_coins_uuid.append(favourite_coin.uuid)
-        url = urljoin(os.getenv("PARSE_URL"), f"coin/{favourite_coin.uuid}")
-        headers = {"x-access-token": os.getenv("API_KEY")}
-        response = requests.get(url, headers=headers)
-        coin = response.json()["data"]["coin"]
-        coins.append({
-            "rank": coin["rank"],
-            "name": coin["name"],
-            "symbol": coin["symbol"],
-            "uuid": favourite_coin.uuid,
-            "price": coin["price"],
-            "iconUrl": coin["iconUrl"],
-            "marketCap": coin["marketCap"]
-        })
+        for coin in data:
+            if favourite_coin.uuid == coin["uuid"]:
+                coins.append({
+                    "rank": coin["rank"],
+                    "name": coin["name"],
+                    "symbol": coin["symbol"],
+                    "uuid": favourite_coin.uuid,
+                    "price": coin["price"],
+                    "iconUrl": coin["iconUrl"],
+                    "marketCap": coin["marketCap"]
+                })
 
     context = {
         "coins": coins,
@@ -68,8 +74,10 @@ def favourites_change(request, uuid):
         symbol=coin["symbol"],
         uuid=coin["uuid"],
     )
+
     if user in coin.users.all():
         coin.users.remove(user)
     else:
         coin.users.add(user)
+
     return redirect(request.META['HTTP_REFERER'])
