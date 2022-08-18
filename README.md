@@ -1,10 +1,10 @@
 # Crypto-Django-Telegram project
 
-Django project for getting crypto prices with telegram bot registration.
+Django project for getting actual crypto prices with telegram bot registration.
 
 ## Check it out!
-
-[Deployed on heroku](https://crypto-django-telegram.herokuapp.com/)
+Project is deployed on heroku:
+[->push this link](https://crypto-django-telegram.herokuapp.com/)
 
 
 ## Installation
