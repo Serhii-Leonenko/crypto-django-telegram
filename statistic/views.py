@@ -1,9 +1,7 @@
 import os
 from urllib.parse import urljoin
-from django.contrib.auth import mixins
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.views import generic
 
 import requests
 
@@ -15,47 +13,61 @@ def index(request):
     url = urljoin(os.getenv("PARSE_URL"), "coins")
     headers = {"x-access-token": os.getenv("API_KEY")}
     response = requests.get(url, headers=headers)
-    data = response.json()["data"]["coins"]
-    for coin in data:
-        name = coin["name"]
-        uuid = coin["uuid"]
-        price = coin["price"]
-        rank = coin["rank"]
-        market_cap = f"{int(coin['marketCap']):,}"
-        icon = coin["iconUrl"]
-        symbol = coin["symbol"]
-
-        obj, created = Coin.objects.update_or_create(
-            name=name,
-            symbol=symbol,
-            uuid=uuid,
-            icon=icon,
-            defaults={
-                "rank": rank,
-                "price": price,
-                "market_cap": market_cap
-            }
-        )
+    coins = response.json()["data"]["coins"]
+    favourite_coins_uuid = [
+        coin.uuid
+        for coin in Coin.objects.filter(users__in=[request.user])
+    ]
 
     context = {
-        "coins": Coin.objects.all()
+        "coins": coins,
+        "favourites": favourite_coins_uuid
     }
 
     return render(request, "statistic/index.html", context=context)
 
 
-class FavouriteListView(mixins.LoginRequiredMixin, generic.ListView):
-    model = Coin
-    template_name = "statistic/index.html"
-    context_object_name = "coins"
+@login_required
+def favourites_list(request):
+    favourites = Coin.objects.filter(users__in=[request.user])
+    favourite_coins_uuid = []
+    coins = []
+    for favourite_coin in favourites:
+        favourite_coins_uuid.append(favourite_coin.uuid)
+        url = urljoin(os.getenv("PARSE_URL"), f"coin/{favourite_coin.uuid}")
+        headers = {"x-access-token": os.getenv("API_KEY")}
+        response = requests.get(url, headers=headers)
+        coin = response.json()["data"]["coin"]
+        coins.append({
+            "rank": coin["rank"],
+            "name": coin["name"],
+            "symbol": coin["symbol"],
+            "uuid": favourite_coin.uuid,
+            "price": coin["price"],
+            "iconUrl": coin["iconUrl"],
+            "marketCa": coin["marketCap"]
+        })
 
-    def get_queryset(self):
-        return Coin.objects.filter(users__in=[self.request.user])
+    context = {
+        "coins": coins,
+        "favourites": favourite_coins_uuid
+    }
+
+    return render(request, "statistic/index.html", context=context)
 
 
-def favourites_change(request, pk):
+def favourites_change(request, uuid):
     user = request.user
-    coin = Coin.objects.get(pk=pk)
+    url = urljoin(os.getenv("PARSE_URL"), f"coin/{uuid}")
+    headers = {"x-access-token": os.getenv("API_KEY")}
+    response = requests.get(url, headers=headers)
+    coin = response.json()["data"]["coin"]
+    coin, _ = Coin.objects.get_or_create(
+        rank=coin["rank"],
+        name=coin["uuid"],
+        symbol=coin["symbol"],
+        uuid=coin["uuid"],
+    )
     if user in coin.users.all():
         coin.users.remove(user)
     else:

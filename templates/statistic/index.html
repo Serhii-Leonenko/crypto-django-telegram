@@ -1,5 +1,6 @@
 {%  extends "base.html" %}
 {% load crispy_forms_filters %}
+{% load humanize %}
 {% block content %}
     <h1>Crypto Market</h1>
     <br>
@@ -19,15 +20,16 @@
         {% for coin in coins %}
              <tr>
                 <td>{{ coin.rank }}</td>
-                <td><img width="20" height="20" alt="" src={{ coin.icon }} ></td>
+                <td><img width="20" height="20" alt="" src={{ coin.iconUrl }} ></td>
                 <td>{{ coin.symbol }}</td>
                 <td>{{ coin.name }}</td>
-                <td>{{ coin.price }} $</td>
-                <td>{{ coin.market_cap }} $</td>
-                <td>{% if user in coin.users.all %}
-                        <a  class="btn btn-warning" href="{% url 'statistic:favourites_change' pk=coin.id %}">Remove from favourites</a>
+                <td>{{ coin.price|floatformat:2 }} $</td>
+                <td>{{ coin.marketCap|intcomma }} $</td>
+                <td>
+                    {% if coin.uuid in favourites %}
+                        <a class="btn btn-warning" href="{% url 'statistic:favourites_change' uuid=coin.uuid %}">Remove from favourites</a>
                     {% else %}
-                        <a  class="btn btn-success" href="{% url 'statistic:favourites_change' pk=coin.id %}">Add to favourites</a>
+                        <a class="btn btn-success" href="{% url 'statistic:favourites_change' uuid=coin.uuid %}">Add to favourites</a>
                     {% endif %}
                 </td>
             </tr>

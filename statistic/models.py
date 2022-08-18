@@ -13,10 +13,7 @@ class Coin(models.Model):
     name = models.CharField(max_length=255, unique=True)
     symbol = models.CharField(max_length=255, unique=True)
     uuid = models.CharField(max_length=255, unique=True)
-    price = models.DecimalField(max_digits=15, decimal_places=2)
-    market_cap = models.CharField(max_length=255)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="coins")
-    icon = models.URLField()
 
     class Meta:
         ordering = ["rank"]
