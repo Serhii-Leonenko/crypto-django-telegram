@@ -45,7 +45,7 @@ def favourites_list(request):
             "uuid": favourite_coin.uuid,
             "price": coin["price"],
             "iconUrl": coin["iconUrl"],
-            "marketCa": coin["marketCap"]
+            "marketCap": coin["marketCap"]
         })
 
     context = {
